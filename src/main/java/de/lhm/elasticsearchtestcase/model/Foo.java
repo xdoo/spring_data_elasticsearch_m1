@@ -15,8 +15,10 @@ import org.springframework.data.elasticsearch.annotations.FieldType;
 public class Foo {
     @Id
     String id;
-    @Field(type = FieldType.Keyword)
+    @Field(type = FieldType.Text)
     String myfoo;
+    @Field(type = FieldType.Text)
+    String title;
     @Field(type = FieldType.Nested, includeInParent = true)
     Bar bar;
 }
