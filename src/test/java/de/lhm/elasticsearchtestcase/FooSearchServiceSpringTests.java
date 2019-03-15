@@ -30,36 +30,36 @@ public class FooSearchServiceSpringTests {
 
 	    // save 4 different foo objects to index 'foos'
         Foo foo01 = new Foo(
-                RandomStringUtils.randomAlphanumeric(35).toUpperCase(),
+                "FOO0001",
                 "xyzfoo",
                 new Bar("qwerbar")
         );
         this.fooRepository.save(foo01);
         Foo foo02 =new Foo(
-                RandomStringUtils.randomAlphanumeric(35).toUpperCase(),
+                "FOO0002",
                 "xyzfoo",
                 new Bar("asdfbar")
         );
         this.fooRepository.save(foo02);
         Foo foo03 =new Foo(
-                RandomStringUtils.randomAlphanumeric(35).toUpperCase(),
+                "FOO0003",
                 "poiufoo",
                 new Bar("qwerbar")
         );
         this.fooRepository.save(foo03);
         Foo foo04 =new Foo(
-                RandomStringUtils.randomAlphanumeric(35).toUpperCase(),
+                "FOO0004",
                 "poiufoo",
                 new Bar("asdfbar")
         );
         this.fooRepository.save(foo04);
 
         // check save
-        assertThat(this.fooRepository.count(), is(equalTo(4)));
+        assertThat(this.fooRepository.count(), is(equalTo(4L)));
 
         // query for my foo
         Page<Foo> foos01 = this.fooSearchService.searchForFoo("xyz*", 0);
-        assertThat(foos01.getTotalElements(), is(equalTo(2)));
+        assertThat(foos01.getTotalElements(), is(equalTo(2L)));
 
     }
 
