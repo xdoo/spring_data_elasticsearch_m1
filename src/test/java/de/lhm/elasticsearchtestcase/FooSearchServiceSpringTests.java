@@ -4,7 +4,6 @@ import de.lhm.elasticsearchtestcase.model.Bar;
 import de.lhm.elasticsearchtestcase.model.Foo;
 import de.lhm.elasticsearchtestcase.repositories.FooRepository;
 import de.lhm.elasticsearchtestcase.services.FooSearchService;
-import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +59,18 @@ public class FooSearchServiceSpringTests {
         // query for my foo
         Page<Foo> foos01 = this.fooSearchService.searchForFoo("xyz*", 0);
         assertThat(foos01.getTotalElements(), is(equalTo(2L)));
+
+        // query for an other foo
+        Page<Foo> foos02 = this.fooSearchService.searchForFoo("poiu*", 0);
+        assertThat(foos02.getTotalElements(), is(equalTo(2L)));
+
+        // query for a bar attribute
+        Page<Foo> foos03 = this.fooSearchService.searchForFoo("asdf*", 0);
+        assertThat(foos03.getTotalElements(), is(equalTo(2L)));
+
+        // query for a bar and foo attribute
+        Page<Foo> foos04 = this.fooSearchService.searchForFoo("asdf* poiu*", 0);
+        assertThat(foos04.getTotalElements(), is(equalTo(3L)));
 
     }
 
