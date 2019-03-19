@@ -5,9 +5,6 @@ import de.lhm.elasticsearchtestcase.model.Foo;
 import de.lhm.elasticsearchtestcase.repositories.FooRepository;
 import de.lhm.elasticsearchtestcase.services.FooSearchService;
 import lombok.extern.slf4j.Slf4j;
-import org.elasticsearch.action.search.SearchResponse;
-import org.elasticsearch.search.SearchHit;
-import org.elasticsearch.search.suggest.Suggest;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +13,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.elasticsearch.core.completion.Completion;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Iterator;
 import java.util.List;
 
 import static org.hamcrest.MatcherAssert.assertThat;
