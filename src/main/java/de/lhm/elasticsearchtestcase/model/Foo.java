@@ -31,6 +31,9 @@ public class Foo {
     @Field(type = FieldType.Nested, includeInParent = true)
     Bar bar;
 
+    @Field(type = FieldType.Nested, includeInParent = true)
+    Boo boo;
+
     @CompletionField
     Completion suggest;
 }

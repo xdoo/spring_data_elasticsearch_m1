@@ -1,6 +1,8 @@
 package de.lhm.elasticsearchtestcase;
 
+import com.google.common.collect.Lists;
 import de.lhm.elasticsearchtestcase.model.Bar;
+import de.lhm.elasticsearchtestcase.model.Boo;
 import de.lhm.elasticsearchtestcase.model.Foo;
 import de.lhm.elasticsearchtestcase.repositories.FooRepository;
 import de.lhm.elasticsearchtestcase.services.FooSearchService;
@@ -13,6 +15,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.elasticsearch.core.completion.Completion;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.elasticsearch.index.query.QueryBuilders.*;
@@ -61,7 +64,12 @@ public class FooSearchServiceSpringTests {
 
 
         Iterable<Foo> foos = this.fooRepository.search(matchQuery("bar.mybar", "asdfbar"));
-        assertThat(foos.iterator().hasNext(), is(true));
+        ArrayList<Foo> list = Lists.newArrayList(foos);
+        assertThat(list.size(), is(equalTo(2)));
+
+        list.forEach(f -> {
+            log.info(f.toString());
+        });
     }
 
     @Test
@@ -79,6 +87,15 @@ public class FooSearchServiceSpringTests {
 //        assertThat(suggests.size(), is(2));
 //        assertThat(suggests.get(0), isOneOf("xyzfoo", "xyztitle"));
 //        assertThat(suggests.get(1), isOneOf("xyzfoo", "xyztitle"));
+    }
+
+    @Test
+    public void testFilters() {
+
+	    this.createEntries();
+
+        Page<Foo> results = this.fooSearchService.searchForFilterFoos("awesome", "xyzfoo", "FOO0001", 0);
+        assertThat(results.getTotalElements(), is(equalTo(1L)));
     }
 
     private void logFoos(Page<Foo> foos ) {
@@ -136,6 +153,7 @@ public class FooSearchServiceSpringTests {
         );
         Completion c004 = new Completion(new String[]{"poiufoo", "asdfbar", "asdfbar poiufoo", "poiufoo asdfbar"});
         foo04.setSuggest(c004);
+        foo04.setBoo(new Boo("Hans"));
         this.fooRepository.save(foo04);
 
         // check save

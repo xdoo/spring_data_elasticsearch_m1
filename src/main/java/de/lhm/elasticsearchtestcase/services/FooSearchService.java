@@ -18,6 +18,8 @@ import org.springframework.data.elasticsearch.core.query.NativeSearchQuery;
 import org.springframework.data.elasticsearch.core.query.NativeSearchQueryBuilder;
 import org.springframework.stereotype.Service;
 
+import static org.elasticsearch.index.query.QueryBuilders.*;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -52,6 +54,18 @@ public class FooSearchService {
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withIndices("foos")
                 .withQuery(queryStringQueryBuilder)
+                .withPageable(PageRequest.of(page, 15))
+                .build();
+
+        Page<Foo> foos = this.fooRepository.search(searchQuery);
+        return foos;
+    }
+
+    public Page<Foo> searchForFilterFoos(String query, String myfooFilter, String idFilter, int page) {
+        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+                .withIndices("foos")
+                .withQuery(matchPhrasePrefixQuery("query", query))
+                .withFilter(termQuery("myfoo", myfooFilter))
                 .withPageable(PageRequest.of(page, 15))
                 .build();
 
