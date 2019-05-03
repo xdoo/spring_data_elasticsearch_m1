@@ -1,11 +1,16 @@
 package de.lhm.elasticsearchtestcase.services;
 
+import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 import de.lhm.elasticsearchtestcase.model.Foo;
 import de.lhm.elasticsearchtestcase.repositories.FooRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.common.unit.Fuzziness;
+import org.elasticsearch.index.query.BoolQueryBuilder;
+import org.elasticsearch.index.query.QueryBuilders;
 import org.elasticsearch.index.query.QueryStringQueryBuilder;
+import org.elasticsearch.index.query.TermQueryBuilder;
 import org.elasticsearch.search.suggest.Suggest;
 import org.elasticsearch.search.suggest.SuggestBuilder;
 import org.elasticsearch.search.suggest.SuggestBuilders;
@@ -61,13 +66,38 @@ public class FooSearchService {
         return foos;
     }
 
-    public Page<Foo> searchForFilterFoos(String query, String myfooFilter, String idFilter, int page) {
+    public Page<Foo> searchForFilterFoos(String query, String myfooFilter, String mybarFilter, int page) {
+        QueryStringQueryBuilder queryStringQueryBuilder = new QueryStringQueryBuilder(query);
+        queryStringQueryBuilder.field("title");
+        queryStringQueryBuilder.field("bar.mybar");
+
+        Lists.newArrayList("bar.mybar", "myfoo");
+
+        BoolQueryBuilder boolQueryBuilder = QueryBuilders.boolQuery()
+                .must(queryStringQueryBuilder)
+//                .filter(termQuery("bar.mybar", mybarFilter))
+//                .filter(termQuery("myfoo", myfooFilter))
+                ;
+        if(!Strings.isNullOrEmpty(mybarFilter)) {
+            boolQueryBuilder.filter(termQuery("bar.mybar", mybarFilter));
+        }
+
+        if(!Strings.isNullOrEmpty(myfooFilter)) {
+            boolQueryBuilder.filter(termQuery("myfoo", myfooFilter));
+        }
+
         NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
                 .withIndices("foos")
-                .withQuery(matchPhrasePrefixQuery("query", query))
-                .withFilter(termQuery("myfoo", myfooFilter))
-                .withPageable(PageRequest.of(page, 15))
+                .withQuery(boolQueryBuilder)
                 .build();
+
+//        NativeSearchQuery searchQuery = new NativeSearchQueryBuilder()
+//                .withIndices("foos")
+//                .withQuery(queryStringQueryBuilder)
+//                .withFilter(termQuery("bar.mybar", mybarFilter))
+//                .withFilter(termQuery("myfoo", myfooFilter))
+//                .withPageable(PageRequest.of(page, 15))
+//                .build();
 
         Page<Foo> foos = this.fooRepository.search(searchQuery);
         return foos;

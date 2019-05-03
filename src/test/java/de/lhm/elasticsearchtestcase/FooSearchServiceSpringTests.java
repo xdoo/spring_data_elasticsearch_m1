@@ -94,8 +94,8 @@ public class FooSearchServiceSpringTests {
 
 	    this.createEntries();
 
-        Page<Foo> results = this.fooSearchService.searchForFilterFoos("awesome", "xyzfoo", "FOO0001", 0);
-        assertThat(results.getTotalElements(), is(equalTo(1L)));
+        Page<Foo> results = this.fooSearchService.searchForFilterFoos("Boob*", "xyzfoo", "asdfbar", 0);
+        this.logFoos(results);
     }
 
     private void logFoos(Page<Foo> foos ) {
@@ -156,8 +156,20 @@ public class FooSearchServiceSpringTests {
         foo04.setBoo(new Boo("Hans"));
         this.fooRepository.save(foo04);
 
+        // 05
+        Foo foo05 =new Foo(
+                "FOO0005",
+                "xyzfoo",
+                "Boobel dibubb",
+                new Bar("asdfbar")
+        );
+        Completion c005 = new Completion(new String[]{"xyzfoo", "asdfbar", "asdfbar xyzfoo", "xyzfoo asdfbar"});
+        foo05.setSuggest(c005);
+        foo05.setBoo(new Boo("Hans"));
+        this.fooRepository.save(foo05);
+
         // check save
-        assertThat(this.fooRepository.count(), is(equalTo(4L)));
+        assertThat(this.fooRepository.count(), is(equalTo(5L)));
     }
 
 }
